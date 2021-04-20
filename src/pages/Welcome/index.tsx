@@ -14,7 +14,9 @@ const Welcome: React.FC = () => {
                 de forma fácil.
             </MainTitle>
         
-            <MainImage source={ Watering } />
+            <MainImage 
+                source={ Watering }
+                resizeMode="contain" />
 
             <MainSubtitle>
                 Não esqueça mais de regar suas plantas.
@@ -25,7 +27,7 @@ const Welcome: React.FC = () => {
                 activeOpacity={.7}
             >
                 <ButtonText>
-                    <Feather name="chevron-right" size={20} />    
+                    <Feather name="chevron-right" size={32} />    
                 </ButtonText>
             </EnterButton>
         </Container>
