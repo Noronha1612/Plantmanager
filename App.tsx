@@ -15,7 +15,8 @@ export default function App() {
         Jost_600SemiBold
     });
 
-    if ( !fontsLoaded ) return <LoadingScreen />;
+    if ( !fontsLoaded ) 
+        return <LoadingScreen />;
 
     return (
         <>
