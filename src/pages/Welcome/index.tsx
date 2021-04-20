@@ -1,5 +1,6 @@
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/core';
 
 import { 
     Container, 
@@ -13,6 +14,8 @@ import {
 import Watering from '../../assets/watering.png';
 
 const Welcome: React.FC = () => {
+    const navigator = useNavigation();
+
     return  (
         <Container>
             <ContentWrapper>
@@ -33,6 +36,7 @@ const Welcome: React.FC = () => {
 
                 <EnterButton
                     activeOpacity={.7}
+                    onPress={ () => navigator.navigate('UserIdentification') }
                 >
                     <Feather 
                         color="#FFF"

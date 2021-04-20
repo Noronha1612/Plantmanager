@@ -6,8 +6,8 @@ import {
     Jost_600SemiBold
 } from '@expo-google-fonts/jost';
 
-import Welcome from './src/pages/Welcome';
 import LoadingScreen from './src/utils/LoadingScreen';
+import Routes from './src/routes';
 
 export default function App() {
     const [ fontsLoaded ] = useFonts({
@@ -21,7 +21,7 @@ export default function App() {
     return (
         <>
             <StatusBar style="auto" />
-            <Welcome />
+            <Routes />
         </>
     );
 }

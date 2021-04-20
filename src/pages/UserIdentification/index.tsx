@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
@@ -14,6 +15,7 @@ import {
 } from './styles';
 
 const UserIdentification: React.FC = () => {
+    const navigator = useNavigation();
 
     const [ isFocused, setIsFocused ] = useState(false);
     const [ isFilled, setIsFilled ] = useState(false);
@@ -28,6 +30,12 @@ const UserIdentification: React.FC = () => {
     const handleInputFocus = useCallback(() => {
         setIsFocused(true);
     }, []);
+
+    const handleSubmit = useCallback(() => {
+        if ( !username ) return;
+
+        navigator.navigate('Confirmation');
+    }, [ username, navigator ]);
 
     return (
         <Container>
@@ -45,10 +53,13 @@ const UserIdentification: React.FC = () => {
                         isFocused={ isFocused || isFilled }
                         placeholder="Digite um nome"
                         onBlur={ handleInputBlur }
+                        value={ username }
                         onFocus={ handleInputFocus } />
 
                     <FormFooter>
-                        <Button text="Confirmar" />
+                        <Button 
+                            onPress={ handleSubmit }
+                            text="Confirmar" />
                     </FormFooter>
                 </Form>
 
