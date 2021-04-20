@@ -1,3 +1,4 @@
+import { Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '../../../styles/colors';
 
@@ -22,8 +23,7 @@ export const MainSubtitle = styled.Text`
 `;
 
 export const MainImage = styled.Image`
-    width: 292px;
-    height: 284px;
+    height: ${ Dimensions.get('window').width * .7 }px;
 `;
 
 export const EnterButton = styled.TouchableOpacity`
