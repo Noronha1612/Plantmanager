@@ -1,7 +1,14 @@
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 
-import { Container, ContentWrapper, EnterButton, MainImage, MainSubtitle, MainTitle } from './styles';
+import { 
+    Container, 
+    ContentWrapper, 
+    EnterButton, 
+    MainImage, 
+    MainSubtitle, 
+    MainTitle 
+} from './styles';
 
 import Watering from '../../assets/watering.png';
 
