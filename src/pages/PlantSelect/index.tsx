@@ -27,7 +27,17 @@ const PlantSelect: React.FC = () => {
     const [ enviroments, setEnviroments ] = useState<Enviroment[]>([]);
     const [ currentEnviroment, setCurrentEnviroment ] = useState('');
 
+    const [ loading, setLoading ] = useState(true);
+
     const [ plants, setPlants ] = useState<Plant[]>([]);
+
+    // Update loading state
+    useEffect(() => {
+        
+        if ( enviroments.length === 0 || plants.length === 0 ) setLoading(true);
+        else setLoading(false);
+
+    }, [ plants, enviroments ]);
 
     // Fetch environments data
     useEffect(() => {
@@ -75,7 +85,7 @@ const PlantSelect: React.FC = () => {
         />
     );
 
-    if ( enviroments.length === 0 || plants.length === 0 )
+    if ( loading )
         return <LoadingScreen />
 
     return (
