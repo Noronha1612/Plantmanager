@@ -1,4 +1,5 @@
-import React from 'react';
+import { useNavigation } from '@react-navigation/core';
+import React, { useCallback } from 'react';
 import Button from '../../components/Button';
 
 import { 
@@ -11,6 +12,12 @@ import {
 } from './styles';
 
 const Confirmation: React.FC = () => {
+    const navigator = useNavigation();
+
+    const handleStart = useCallback(() => {
+        navigator.navigate('PlantSelect');
+    }, [ navigator ]);
+
     return (
         <Container>
             <Content>
@@ -24,7 +31,9 @@ const Confirmation: React.FC = () => {
                 </SubTitle>
 
                 <FooterContent>
-                    <Button text="Começar" />
+                    <Button 
+                        onPress={ handleStart }
+                        text="Começar" />
                 </FooterContent>
             </Content>
 

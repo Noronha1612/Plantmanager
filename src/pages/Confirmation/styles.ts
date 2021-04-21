@@ -37,5 +37,5 @@ export const SubTitle = styled.Text`
 export const FooterContent = styled.View`
     width: 100%;
     margin-top: 32px;
-    padding: 0 50px;
+    padding: 0 75px;
 `;
