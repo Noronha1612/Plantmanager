@@ -6,7 +6,7 @@ const LoadingScreen: React.FC = () => {
     return (
         <SafeAreaView style={ styles.container }>
             <LottieView 
-                source={require('./animation.json')}
+                source={require('../../assets/load.json')}
                 resizeMode="contain"
                 style={ styles.animation }
                 autoPlay 
