@@ -29,7 +29,13 @@ export const Description = styled.Text`
 `;
 
 export const EnviromentList = styled.FlatList`
-    height: 40px;
+    max-height: 45px;
+    height: 45px;
+    min-height: 45px;
     padding-bottom: 5px;
-    margin: 32px 0 32px 5px;
+    margin: 32px 0;   
+`;
+
+export const PlantList = styled.FlatList`
+
 `;
