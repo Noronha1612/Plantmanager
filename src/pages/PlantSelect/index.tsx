@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { ListRenderItem } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, ListRenderItem } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import colors from '../../../styles/colors';
 import { Enviroment, Plant } from '../../@types/interfaces';
 import EnviromentButton from '../../components/EnviromentButton';
 import Header from '../../components/Header';
@@ -27,13 +28,26 @@ const PlantSelect: React.FC = () => {
     const [ enviroments, setEnviroments ] = useState<Enviroment[]>([]);
     const [ currentEnviroment, setCurrentEnviroment ] = useState('');
 
+    const [ plants, setPlants ] = useState<Plant[]>([]);
+    const [ filteredPlants, setFilteredPlants ] = useState<Plant[]>([]);
+
+    const [ page, setPage ] = useState(1);
+    const [ loadingMore, setLoadingMore ] = useState(false);
+    const [ loadedAll, setLoadedAll ] = useState(false);
+
     const [ loading, setLoading ] = useState(true);
 
-    const [ plants, setPlants ] = useState<Plant[]>([]);
+    // Keeps filteredPlants filtered
+    useEffect(() => {
+        setFilteredPlants(plants.filter(plant => {
+            if ( currentEnviroment === 'all' ) return true;
+
+            return plant.environments.includes(currentEnviroment);
+        }));
+    }, [ plants, currentEnviroment ]);
 
     // Update loading state
     useEffect(() => {
-        
         if ( enviroments.length === 0 || plants.length === 0 ) setLoading(true);
         else setLoading(false);
 
@@ -59,15 +73,29 @@ const PlantSelect: React.FC = () => {
 
     // Fetch plants data
     useEffect(() => {
-        const getPlants = async () => {
-            const { data: plants } = await api
-                .get<Plant[]>('plants?_sort=name&order=asc')
-
-            setPlants(plants);
-        };
-
         getPlants();
     }, []);
+    
+    const getPlants = async () => {
+        const { data: plants } = await api
+            .get<Plant[]>(`plants?_sort=name&order=asc&_page=${ page }&_limit=8`)
+
+        if ( plants.length === 0 ) setLoadedAll(true);
+        else if ( page > 1 ) setPlants(oldValue => [...oldValue, ...plants]);
+        else setPlants(plants);
+        
+        
+        setLoadingMore(false);
+    }
+
+    const handleFetchMore = (distance: number) => {
+        if ( distance < 1 || loadedAll ) return;
+        setLoadingMore(true);
+
+        setPage(oldValue => oldValue + 1);
+        console.log(page);
+        getPlants();
+    }
 
     const flatListRenderEnvironment: ListRenderItem<Enviroment> = ({ item }) => (
         <EnviromentButton
@@ -104,18 +132,23 @@ const PlantSelect: React.FC = () => {
                 />
 
                 <PlantList
-                    data={ 
-                        plants.filter((plant) => {
-                            if ( currentEnviroment === 'all' )
-                                return true;
-                            
-                            return plant.environments.includes(currentEnviroment);
-                        })
-                    }
+                    data={ filteredPlants }
                     keyExtractor={((item: Plant) => item.id) as any}
                     renderItem={ flatListRenderPlants as any }
                     numColumns={2}
                     showsVerticalScrollIndicator={ false }
+                    onEndReachedThreshold={0.1}
+                    onEndReached={({ distanceFromEnd }) => 
+                        handleFetchMore(distanceFromEnd)
+                    }
+                    ListFooterComponent={
+                        loadingMore ? 
+                        <ActivityIndicator
+                            size={50}
+                            style={{ marginVertical: 20 }}
+                            color={ colors.green } /> : 
+                        <></>
+                    }
                 />
             </Content>
         </Container>
