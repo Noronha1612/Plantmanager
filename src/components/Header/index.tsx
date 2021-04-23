@@ -1,6 +1,6 @@
-import React from 'react';
-import { View } from 'react-native';
-import { SafeAreaViewProps } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
+import { View, ViewProps } from 'react-native';
 
 import UserImageUrl from '../../assets/userImage.png';
 
@@ -12,12 +12,23 @@ import {
     UserName 
 } from './styles';
 
-const Header: React.FC<SafeAreaViewProps> = ({style, ...props}) => {
+interface HeaderProps extends ViewProps {
+    newPlant?: boolean
+}
+
+const Header: React.FC<HeaderProps> = ({style, newPlant, ...props}) => {
+    const [ username, setUsername ] = useState('');
+
+    useEffect(() => {
+        AsyncStorage.getItem('@plantmanager:username')
+            .then(response => setUsername(response || 'Jardineiro'));
+    }, []);
+
     return (
         <Container {...props}>
             <View>
-                <Greetings>Olá,</Greetings>
-                <UserName>Noronha</UserName>
+                <Greetings>{ newPlant? 'Olá,' : 'Minhas' }</Greetings>
+                <UserName>{  newPlant? username : 'Plantinhas'  }</UserName>
             </View>
 
             <ImageWrapper>

@@ -1,3 +1,4 @@
+import { Dimensions } from 'react-native';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import styled, { css } from 'styled-components/native';
 import colors from '../../../styles/colors';
@@ -16,6 +17,7 @@ export const Container = styled.View`
 const headerTextCss = css`
     font-size: 32px;
     line-height: 36px;
+    max-width: ${ Dimensions.get('window').width * 0.7 }px;
     color: ${ colors.heading };
 `;
 
