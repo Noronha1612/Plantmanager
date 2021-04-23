@@ -1,8 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 import Button from '../../components/Button';
+import SafeSaveOnStorage from '../../utils/SafeSaveOnStorage';
 
 import { 
     Container, 
@@ -31,8 +33,11 @@ const UserIdentification: React.FC = () => {
         setIsFocused(true);
     }, []);
 
-    const handleSubmit = useCallback(() => {
-        if ( !username ) return;
+    const handleSubmit = useCallback(async () => {
+        if ( !username ) 
+            return Alert.alert('Ai não...', 'Me diz como chamar você 😢');
+
+        await SafeSaveOnStorage('@plantmanager:username', username);
 
         navigator.navigate('Confirmation');
     }, [ username, navigator ]);
