@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigation } from '@react-navigation/core';
+import React, {  useEffect, useState } from 'react';
 import { ActivityIndicator, ListRenderItem } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
 import colors from '../../../styles/colors';
 import { Enviroment, Plant } from '../../@types/interfaces';
 import EnviromentButton from '../../components/EnviromentButton';
@@ -25,6 +25,8 @@ interface RenderItemProps {
 }
 
 const PlantSelect: React.FC = () => {
+    const navigator = useNavigation();
+
     const [ enviroments, setEnviroments ] = useState<Enviroment[]>([]);
     const [ currentEnviroment, setCurrentEnviroment ] = useState('');
 
@@ -33,7 +35,6 @@ const PlantSelect: React.FC = () => {
 
     const [ page, setPage ] = useState(1);
     const [ loadingMore, setLoadingMore ] = useState(false);
-    const [ loadedAll, setLoadedAll ] = useState(false);
 
     const [ loading, setLoading ] = useState(true);
 
@@ -80,26 +81,22 @@ const PlantSelect: React.FC = () => {
         const { data: plants } = await api
             .get<Plant[]>(`plants?_sort=name&order=asc&_page=${ page }&_limit=8`)
 
-        if ( plants.length === 0 ) setLoadedAll(true);
-        else if ( page > 1 ) setPlants(oldValue => [...oldValue, ...plants]);
+        if ( page > 1 ) setPlants(oldValue => [...oldValue, ...plants]);
         else setPlants(plants);
-        
         
         setLoadingMore(false);
     }
 
     const handleFetchMore = (distance: number) => {
-        if ( distance < 1 || loadedAll ) return;
+        if ( distance < 1 ) return;
         setLoadingMore(true);
 
         setPage(oldValue => oldValue + 1);
-        console.log(page);
         getPlants();
     }
 
     const flatListRenderEnvironment: ListRenderItem<Enviroment> = ({ item }) => (
         <EnviromentButton
-            key={ item.key }
             title={ item.title }
             active={ currentEnviroment.localeCompare(item.key) === 0 }
             onPress={ () => setCurrentEnviroment(item.key) }
@@ -107,9 +104,10 @@ const PlantSelect: React.FC = () => {
     );
     const flatListRenderPlants: ListRenderItem<Plant> = ({ item }) => (
         <PlantCardPrimary
-            key={ item.id }
             data={item}
-            onPress={ () => console.log(item) }
+            onPress={ () => {
+                navigator.navigate('PlantSave', { plant: item });
+            }}
         />
     );
 
@@ -119,12 +117,13 @@ const PlantSelect: React.FC = () => {
     return (
         <Container>
             <Content>
-                <Header />
+                <Header newPlant/>
 
                 <DescriptionBold>Em qual ambiente</DescriptionBold>
                 <Description>você quer colocar sua planta?</Description>
             
                 <EnviromentList
+                    keyExtractor={((item: Enviroment) => String(item.key)) as any}
                     data={ enviroments }
                     renderItem={ flatListRenderEnvironment as any }
                     horizontal
@@ -133,7 +132,7 @@ const PlantSelect: React.FC = () => {
 
                 <PlantList
                     data={ filteredPlants }
-                    keyExtractor={((item: Plant) => item.id) as any}
+                    keyExtractor={((item: Plant) => String(item.id)) as any}
                     renderItem={ flatListRenderPlants as any }
                     numColumns={2}
                     showsVerticalScrollIndicator={ false }
@@ -143,11 +142,12 @@ const PlantSelect: React.FC = () => {
                     }
                     ListFooterComponent={
                         loadingMore ? 
-                        <ActivityIndicator
-                            size={50}
-                            style={{ marginVertical: 20 }}
-                            color={ colors.green } /> : 
-                        <></>
+                            <ActivityIndicator
+                                size={50}
+                                style={{ marginVertical: 20 }}
+                                color={ colors.green } /> 
+                            : 
+                            <></>
                     }
                 />
             </Content>
